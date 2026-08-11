@@ -1,10 +1,12 @@
+const bcrypt = require('bcryptjs');
 const User = require('../models/userModel');
 
 const userController = {
     createUser: (req, res) => {
+        const hashedPassword = bcrypt.hashSync(req.body.password, 10);
         const newUser = {
             username: req.body.username,
-            password: req.body.password,
+            password: hashedPassword,
             role: req.body.role,
         };
 
@@ -59,17 +61,31 @@ const userController = {
 
     updateUser: (req, res) => {
         const userId = req.params.id;
-        const updatedUser = {
-            username: req.body.username,
-            password: req.body.password,
-            role: req.body.role,
-        };
 
-        User.update(userId, updatedUser, (err) => {
+        User.findById(userId, (err, user) => {
             if (err) {
                 return res.status(500).json({ error: err });
             }
-            res.redirect('/users');
+            if (!user) {
+                return res.status(404).json({ message: 'User not found' });
+            }
+
+            const updatedUser = {
+                username: req.body.username,
+                role: req.body.role,
+                password: user.password,
+            };
+
+            if (req.body.password && req.body.password.trim() !== '') {
+                updatedUser.password = bcrypt.hashSync(req.body.password, 10);
+            }
+
+            User.update(userId, updatedUser, (err) => {
+                if (err) {
+                    return res.status(500).json({ error: err });
+                }
+                res.redirect('/users');
+            });
         });
     },
 

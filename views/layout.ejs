@@ -54,6 +54,9 @@
 <body>
     <div class="container">
         <%- include('partials/navbar') %>
+        <% if (typeof successMessage !== 'undefined' && successMessage) { %>
+            <div class="alert alert-success text-center mt-4"><%= successMessage %></div>
+        <% } %>
         <%- body %>
 
     <footer class="footer mt-auto py-3 bg-light text-center">
