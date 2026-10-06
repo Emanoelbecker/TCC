@@ -1,0 +1,51 @@
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>Venda #<%= venda.idVenda %></h1>
+    <div>
+        <a href="/vendas/<%= venda.idVenda %>/edit" class="btn btn-outline-primary">Editar</a>
+        <a href="/vendas" class="btn btn-link">Voltar à lista</a>
+    </div>
+</div>
+
+<dl class="row">
+    <dt class="col-sm-3">Cliente</dt>
+    <dd class="col-sm-9"><%= venda.cliente ? venda.cliente.nome : '-' %></dd>
+    <dt class="col-sm-3">Data do pedido</dt>
+    <dd class="col-sm-9"><%= venda.dataPedido %></dd>
+    <dt class="col-sm-3">Data da entrega</dt>
+    <dd class="col-sm-9"><%= venda.dataEntrega || '-' %></dd>
+    <dt class="col-sm-3">Local de entrega</dt>
+    <dd class="col-sm-9"><%= venda.localEntrega || '-' %></dd>
+</dl>
+
+<h2 class="h4">Produtos</h2>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Produto</th>
+                <th scope="col">Quantidade</th>
+                <th scope="col">Valor unitário</th>
+                <th scope="col">Subtotal</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% venda.itensVenda.forEach((item) => { %>
+                <tr>
+                    <td><%= item.produto ? item.produto.nome : '-' %></td>
+                    <td><%= item.quantidade %></td>
+                    <td>R$ <%= item.valorUnitario %></td>
+                    <td>R$ <%= item.subtotal %></td>
+                </tr>
+            <% }) %>
+        </tbody>
+        <tfoot>
+            <tr>
+                <th colspan="3" scope="row" class="text-right">Valor total</th>
+                <th>R$ <%= venda.valorTotal %></th>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+<h2 class="h4">Observação</h2>
+<p><%= venda.observacao || '-' %></p>

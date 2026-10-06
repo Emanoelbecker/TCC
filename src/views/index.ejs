@@ -1,0 +1,81 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="mb-1">Painel administrativo</h1>
+        <p class="text-muted mb-0">Resumo geral do sistema</p>
+    </div>
+    <a href="/vendas/new" class="btn btn-primary">Cadastrar venda</a>
+</div>
+
+<div class="row">
+    <div class="col-sm-6 col-lg-3 mb-3">
+        <section class="card h-100">
+            <div class="card-body">
+                <h2 class="h6 text-muted">Clientes</h2>
+                <p class="display-4 mb-0"><%= quantidadeClientes.toLocaleString('pt-BR') %></p>
+                <a href="/clientes" class="stretched-link">Ver clientes</a>
+            </div>
+        </section>
+    </div>
+    <div class="col-sm-6 col-lg-3 mb-3">
+        <section class="card h-100">
+            <div class="card-body">
+                <h2 class="h6 text-muted">Produtos</h2>
+                <p class="display-4 mb-0"><%= quantidadeProdutos.toLocaleString('pt-BR') %></p>
+                <a href="/produtos" class="stretched-link">Ver produtos</a>
+            </div>
+        </section>
+    </div>
+    <div class="col-sm-6 col-lg-3 mb-3">
+        <section class="card h-100">
+            <div class="card-body">
+                <h2 class="h6 text-muted">Vendas</h2>
+                <p class="display-4 mb-0"><%= quantidadeVendas.toLocaleString('pt-BR') %></p>
+                <a href="/vendas" class="stretched-link">Ver vendas</a>
+            </div>
+        </section>
+    </div>
+    <div class="col-sm-6 col-lg-3 mb-3">
+        <section class="card h-100">
+            <div class="card-body">
+                <h2 class="h6 text-muted">Valor vendido</h2>
+                <p class="h3 mb-0"><%= Number(valorTotalVendido).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) %></p>
+                <span class="text-muted">Soma das vendas registradas</span>
+            </div>
+        </section>
+    </div>
+</div>
+
+<section class="mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <h2 class="h4 mb-0">Últimas vendas</h2>
+        <a href="/vendas">Todas as vendas</a>
+    </div>
+    <% if (ultimasVendas.length === 0) { %>
+        <p class="text-muted">Nenhuma venda cadastrada.</p>
+    <% } else { %>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Venda</th>
+                        <th scope="col">Cliente</th>
+                        <th scope="col">Data do pedido</th>
+                        <th scope="col">Valor total</th>
+                        <th scope="col">Ação</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% ultimasVendas.forEach((venda) => { %>
+                        <tr>
+                            <td>#<%= venda.idVenda %></td>
+                            <td><%= venda.cliente ? (venda.cliente.nomeFantasia || venda.cliente.nome) : 'Cliente indisponível' %></td>
+                            <td><%= venda.dataPedido ? new Date(`${venda.dataPedido}T00:00:00`).toLocaleDateString('pt-BR') : '-' %></td>
+                            <td><%= venda.valorTotal == null ? '-' : Number(venda.valorTotal).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) %></td>
+                            <td><a href="/vendas/<%= venda.idVenda %>">Detalhes</a></td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    <% } %>
+</section>

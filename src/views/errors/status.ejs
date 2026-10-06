@@ -1,0 +1,8 @@
+<section class="text-center py-5" aria-labelledby="error-title">
+    <p class="text-muted mb-1">Erro <%= statusCode %></p>
+    <h1 id="error-title" class="h2"><%= title %></h1>
+    <p class="lead"><%= message %></p>
+    <a class="btn btn-primary mt-2" href="<%= user ? '/' : '/login' %>">
+        <%= user ? 'Voltar ao painel' : 'Ir para o login' %>
+    </a>
+</section>

@@ -1,0 +1,42 @@
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="mb-0">Produtos</h1>
+    <a href="/produtos/new" class="btn btn-primary">Cadastrar produto</a>
+</div>
+
+<% if (produtos.length === 0) { %>
+    <p>Nenhum produto cadastrado.</p>
+<% } else { %>
+<div class="table-responsive">
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Nome</th>
+            <th scope="col">Validade</th>
+            <th scope="col">Valor</th>
+            <th scope="col">Valor por unidade</th>
+            <th scope="col">Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% produtos.forEach(produto => { %>
+            <tr>
+                <td><%= produto.idProduto %></td>
+                <td><%= produto.nome %></td>
+                <td><%= produto.dataValidade || '-' %></td>
+                <td><%= produto.valor ?? '-' %></td>
+                <td><%= produto.valorUnidade ?? '-' %></td>
+                <td>
+                    <a href="/produtos/<%= produto.idProduto %>" class="btn btn-sm btn-outline-primary">Visualizar</a>
+                    <a href="/produtos/<%= produto.idProduto %>/edit" class="btn btn-sm btn-outline-secondary">Editar</a>
+                    <form action="/produtos/<%= produto.idProduto %>?_method=DELETE" method="POST" class="d-inline" onsubmit="return confirm('Excluir este produto?')">
+                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                        <button type="submit" class="btn btn-sm btn-outline-danger">Excluir</button>
+                    </form>
+                </td>
+            </tr>
+        <% }) %>
+    </tbody>
+</table>
+</div>
+<% } %>

@@ -1,0 +1,75 @@
+<% if (errors.length > 0) { %>
+    <div class="alert alert-danger" role="alert">
+        <ul class="mb-0">
+            <% errors.forEach((error) => { %><li><%= error %></li><% }) %>
+        </ul>
+    </div>
+<% } %>
+
+<div class="form-group">
+    <label for="nome">Nome <span aria-hidden="true">*</span></label>
+    <input class="form-control" id="nome" name="nome" maxlength="150" required value="<%= cliente.nome || '' %>">
+</div>
+<div class="form-row">
+    <div class="form-group col-md-6">
+        <label for="cpf">CPF (11 números)</label>
+        <input class="form-control" id="cpf" name="cpf" inputmode="numeric" pattern="[0-9]{11}" maxlength="11" value="<%= cliente.cpf || '' %>">
+    </div>
+    <div class="form-group col-md-6">
+        <label for="cnpj">CNPJ (14 números)</label>
+        <input class="form-control" id="cnpj" name="cnpj" inputmode="numeric" pattern="[0-9]{14}" maxlength="14" value="<%= cliente.cnpj || '' %>">
+    </div>
+</div>
+<div class="form-row">
+    <div class="form-group col-md-6">
+        <label for="representante">Representante</label>
+        <input class="form-control" id="representante" name="representante" maxlength="150" value="<%= cliente.representante || '' %>">
+    </div>
+    <div class="form-group col-md-6">
+        <label for="nomeFantasia">Nome fantasia</label>
+        <input class="form-control" id="nomeFantasia" name="nomeFantasia" maxlength="150" value="<%= cliente.nomeFantasia || '' %>">
+    </div>
+</div>
+<div class="form-row">
+    <div class="form-group col-md-6">
+        <label for="email">E-mail</label>
+        <input class="form-control" id="email" name="email" type="email" maxlength="150" value="<%= cliente.email || '' %>">
+    </div>
+    <div class="form-group col-md-6">
+        <label for="telefone">Telefone</label>
+        <input class="form-control" id="telefone" name="telefone" type="tel" maxlength="20" value="<%= cliente.telefone || '' %>">
+    </div>
+</div>
+<fieldset class="border-top pt-3 mb-3">
+    <legend class="h5">Endereço</legend>
+    <div class="form-row">
+        <div class="form-group col-md-8">
+            <label for="rua">Rua</label>
+            <input class="form-control" id="rua" name="rua" maxlength="150" value="<%= cliente.rua || '' %>">
+        </div>
+        <div class="form-group col-md-4">
+            <label for="numero">Número</label>
+            <input class="form-control" id="numero" name="numero" type="number" min="0" step="1" value="<%= cliente.numero ?? '' %>">
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-4">
+            <label for="cep">CEP (8 números)</label>
+            <input class="form-control" id="cep" name="cep" inputmode="numeric" pattern="[0-9]{8}" maxlength="8" value="<%= cliente.cep || '' %>">
+        </div>
+        <div class="form-group col-md-4">
+            <label for="uf">UF</label>
+            <input class="form-control" id="uf" name="uf" maxlength="2" pattern="[A-Za-z]{2}" value="<%= cliente.uf || '' %>">
+        </div>
+        <div class="form-group col-md-4">
+            <label for="bairro">Bairro</label>
+            <input class="form-control" id="bairro" name="bairro" maxlength="100" value="<%= cliente.bairro || '' %>">
+        </div>
+    </div>
+</fieldset>
+<div class="form-group">
+    <label for="observacao">Observação</label>
+    <textarea class="form-control" id="observacao" name="observacao" rows="4"><%= cliente.observacao || '' %></textarea>
+</div>
+<button type="submit" class="btn btn-primary"><%= isEdit ? 'Salvar alterações' : 'Cadastrar cliente' %></button>
+<a href="/clientes" class="btn btn-link">Cancelar</a>

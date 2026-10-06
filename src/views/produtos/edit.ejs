@@ -1,0 +1,5 @@
+<h1>Editar produto</h1>
+<form action="/produtos/<%= produto.idProduto %>?_method=PUT" method="POST">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <%- include('_form', { produto, errors, isEdit: true }) %>
+</form>

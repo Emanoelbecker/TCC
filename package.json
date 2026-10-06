@@ -2,15 +2,21 @@
   "name": "crud",
   "version": "1.0.0",
   "description": "Sistema de cadastro de usuários.",
-  "main": "app.js",
+  "main": "src/app.js",
   "scripts": {
-    "start": "node app.js",
-    "dev": "nodemon app.js"
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js",
+    "test": "node --test",
+    "admin:create": "node src/services/createAdmin.js",
+    "db:migrate": "sequelize-cli db:migrate",
+    "db:migrate:undo": "sequelize-cli db:migrate:undo",
+    "db:migrate:status": "sequelize-cli db:migrate:status"
   },
   "keywords": [],
   "author": "Emanoel Becker",
   "license": "ISC",
   "dependencies": {
+    "argon2": "^0.45.1",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",
     "dotenv": "^16.4.5",
@@ -19,9 +25,11 @@
     "express-ejs-layouts": "^2.5.1",
     "express-session": "^1.17.3",
     "method-override": "^3.0.0",
-    "mysql2": "^3.11.0"
+    "mysql2": "^3.11.0",
+    "sequelize": "^6.37.7"
   },
   "devDependencies": {
-    "nodemon": "^3.1.4"
+    "nodemon": "^3.1.4",
+    "sequelize-cli": "^6.6.3"
   }
 }

@@ -1,0 +1,5 @@
+<h1>Cadastrar cliente</h1>
+<form action="/clientes" method="POST">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <%- include('_form', { cliente, errors, isEdit: false }) %>
+</form>

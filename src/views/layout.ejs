@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#183d3a">
+    <title>Gestão Comercial</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        :root {
+            --ink: #183d3a;
+            --ink-soft: #28534e;
+            --accent: #d46b45;
+            --canvas: #f3f5f2;
+            --line: #d9e1dc;
+            --text: #243330;
+            --muted: #65736e;
+        }
+
+        html { min-height: 100%; }
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: var(--canvas);
+            color: var(--text);
+            font-family: "Segoe UI", Tahoma, sans-serif;
+        }
+        a { color: #17645a; }
+        a:hover { color: #10483f; }
+        a:focus-visible, button:focus-visible, input:focus-visible,
+        select:focus-visible, textarea:focus-visible, summary:focus-visible {
+            outline: 3px solid #e8a17f;
+            outline-offset: 2px;
+        }
+        .skip-link {
+            position: absolute;
+            top: -100px;
+            left: 1rem;
+            z-index: 1100;
+            padding: .65rem 1rem;
+            background: #fff;
+            color: var(--ink);
+        }
+        .skip-link:focus { top: 1rem; }
+        .navbar {
+            background: var(--ink);
+            padding: .8rem max(1rem, calc((100vw - 1280px) / 2));
+        }
+        .navbar-brand {
+            color: #fff !important;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+        .brand-mark {
+            display: inline-grid;
+            width: 2rem;
+            height: 2rem;
+            margin-right: .55rem;
+            place-items: center;
+            border-radius: 6px;
+            background: var(--accent);
+            color: #fff;
+        }
+        .navbar .nav-link {
+            color: #e0e9e5 !important;
+            padding: .55rem .7rem;
+        }
+        .navbar .nav-link:hover, .navbar .nav-link:focus { color: #fff !important; }
+        .navbar-toggler { border-color: #8aa39a; }
+        .navbar-toggler-icon { filter: invert(1); }
+        .navbar-text { color: #e0e9e5 !important; }
+        .app-main {
+            flex: 1 0 auto;
+            width: 100%;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 2rem 1.25rem 3rem;
+        }
+        .app-main h1, .app-main h2 { color: var(--ink); }
+        .app-main .card {
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            box-shadow: 0 2px 10px rgba(24, 61, 58, .06);
+        }
+        .app-main .card-header { background: #eaf0ec; }
+        .app-main .form-control {
+            min-height: 42px;
+            border-color: #b9c8c0;
+            color: var(--text);
+        }
+        .app-main textarea.form-control { min-height: auto; }
+        .app-main .form-control:focus {
+            border-color: #28786c;
+            box-shadow: 0 0 0 .2rem rgba(40, 120, 108, .18);
+        }
+        .app-main .table-responsive { border: 1px solid var(--line); border-radius: 5px; }
+        .app-main .table { margin-bottom: 0; background: #fff; }
+        .app-main .table thead th {
+            background: #eaf0ec;
+            border-bottom: 2px solid #b9c8c0;
+            color: var(--ink);
+            white-space: nowrap;
+        }
+        .app-main .table td, .app-main .table th { vertical-align: middle; }
+        .app-main .btn-primary {
+            border-color: var(--ink);
+            background: var(--ink);
+        }
+        .app-main .btn-primary:hover { border-color: var(--ink-soft); background: var(--ink-soft); }
+        .app-main .alert { text-align: left; }
+        .app-footer {
+            padding: 1rem 1.25rem;
+            border-top: 1px solid var(--line);
+            background: #e9eeea;
+            color: var(--muted);
+            text-align: center;
+        }
+        @media (max-width: 575.98px) {
+            .app-main { padding: 1.25rem .85rem 2rem; }
+            .app-main h1 { font-size: 1.65rem; }
+            .app-main .d-flex.justify-content-between { align-items: flex-start !important; gap: .75rem; }
+            .app-main .d-flex.justify-content-between .btn { flex-shrink: 0; }
+            .app-main .table { min-width: 600px; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+        }
+    </style>
+</head>
+<body>
+    <a class="skip-link" href="#main-content">Pular para o conteúdo</a>
+    <%- include('partials/navbar') %>
+    <main class="app-main" id="main-content" tabindex="-1">
+        <% if (typeof successMessage !== 'undefined' && successMessage) { %>
+            <div class="alert alert-success" role="status" aria-live="polite"><%= successMessage %></div>
+        <% } %>
+        <% if (typeof errorMessage !== 'undefined' && errorMessage) { %>
+            <div class="alert alert-danger" role="alert" aria-live="assertive"><%= errorMessage %></div>
+        <% } %>
+        <%- body %>
+    </main>
+    <footer class="app-footer">
+        <span>&copy; <%= new Date().getFullYear() %> Gestão Comercial</span>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

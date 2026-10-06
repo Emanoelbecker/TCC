@@ -1,0 +1,87 @@
+<h1>Lista de usuários</h1>
+
+<form id="searchForm" method="GET" action="/users">
+    <div class="form-group">
+        <label for="search">Buscar Usuário:</label>
+        <input type="text" id="search" name="search" class="form-control" placeholder="Digite o nome do usuário" autocomplete="off">
+    </div>
+</form>
+
+<div class="table-responsive">
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Nome</th>
+            <th scope="col">Regra</th>
+            <th scope="col">Ação</th>
+        </tr>
+    </thead>
+    <tbody id="userTableBody">
+        <% users.forEach(user => { %>
+            <tr>
+                <td><%= user.id %></td>
+                <td><%= user.username %></td>
+                <td><%= user.role %></td>
+                <td>
+                    <a href="/users/<%= user.id %>" class="btn btn-primary">View</a>
+                    <a href="/users/<%= user.id %>/edit" class="btn btn-warning">Edit</a>
+                    <form action="/users/<%= user.id %>?_method=DELETE" method="POST" style="display: inline;">
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        <% }) %>
+    </tbody>
+</table>
+</div>
+
+<script>
+    document.getElementById('search').addEventListener('input', function() {
+        const searchValue = this.value;
+
+        fetch(`/users/search?search=${encodeURIComponent(searchValue)}`)
+            .then(response => response.json())
+            .then(data => {
+                const tbody = document.getElementById('userTableBody');
+                tbody.replaceChildren();
+
+                data.users.forEach(user => {
+                    const tr = document.createElement('tr');
+                    const idCell = document.createElement('td');
+                    const usernameCell = document.createElement('td');
+                    const roleCell = document.createElement('td');
+                    const actionCell = document.createElement('td');
+                    const viewLink = document.createElement('a');
+                    const editLink = document.createElement('a');
+                    const deleteForm = document.createElement('form');
+                    const csrfInput = document.createElement('input');
+                    const deleteButton = document.createElement('button');
+
+                    idCell.textContent = String(user.id);
+                    usernameCell.textContent = user.username;
+                    roleCell.textContent = user.role;
+                    viewLink.href = `/users/${encodeURIComponent(user.id)}`;
+                    viewLink.className = 'btn btn-primary';
+                    viewLink.textContent = 'View';
+                    editLink.href = `/users/${encodeURIComponent(user.id)}/edit`;
+                    editLink.className = 'btn btn-warning';
+                    editLink.textContent = 'Edit';
+                    deleteForm.action = `/users/${encodeURIComponent(user.id)}?_method=DELETE`;
+                    deleteForm.method = 'POST';
+                    csrfInput.type = 'hidden';
+                    csrfInput.name = '_csrf';
+                    csrfInput.value = '<%= csrfToken %>';
+                    deleteButton.type = 'submit';
+                    deleteButton.className = 'btn btn-danger';
+                    deleteButton.textContent = 'Delete';
+                    deleteForm.append(csrfInput, deleteButton);
+                    actionCell.append(viewLink, editLink, deleteForm);
+                    tr.append(idCell, usernameCell, roleCell, actionCell);
+                    tbody.appendChild(tr);
+                });
+            })
+            .catch(error => console.error('Error:', error));
+    });
+</script>
