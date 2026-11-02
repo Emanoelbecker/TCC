@@ -9,16 +9,8 @@
 	</div>
 </div>
 
-<% if (produto.foto) { %>
-	<p><a href="<%= produto.foto %>" target="_blank" rel="noopener noreferrer"><img src="<%= produto.foto %>" alt="Foto de <%= produto.nome %>" class="img-thumbnail" style="max-width: 320px; max-height: 240px;"></a></p>
-<% } %>
-
 <dl class="row">
-	<dt class="col-sm-3">Data do lote</dt><dd class="col-sm-9"><%= produto.dataLote || '-' %></dd>
-	<dt class="col-sm-3">Data de validade</dt><dd class="col-sm-9"><%= produto.dataValidade || '-' %></dd>
-	<dt class="col-sm-3">Data de fabricação</dt><dd class="col-sm-9"><%= produto.dataFabricacao || '-' %></dd>
 	<dt class="col-sm-3">Valor</dt><dd class="col-sm-9"><%= produto.valor ?? '-' %></dd>
-	<dt class="col-sm-3">Valor por unidade</dt><dd class="col-sm-9"><%= produto.valorUnidade ?? '-' %></dd>
 	<dt class="col-sm-3">Observação</dt><dd class="col-sm-9"><%= produto.observacao || '-' %></dd>
 	<dt class="col-sm-3">Ingredientes</dt><dd class="col-sm-9"><%= produto.ingredientes || '-' %></dd>
 </dl>

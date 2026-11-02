@@ -13,7 +13,7 @@ const authMiddleware = {
 
     redirectIfAuthenticated: (req, res, next) => {
         if (req.session && req.session.user && req.session.user.role === 'admin') {
-            return res.redirect('/');
+            return res.redirect('/dashboard');
         }
         return next();
     },

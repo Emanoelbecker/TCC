@@ -8,9 +8,10 @@
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
+        <% if (user) { %>
         <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-                <a class="nav-link" href="/">Painel</a>
+            <a class="nav-link" href="/dashboard">Painel</a>
             </li>
 
             <li class="nav-item dropdown">
@@ -36,17 +37,6 @@
             </li>
 
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownCategorias" role="button"
-                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Categorias
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdownCategorias">
-                    <a class="dropdown-item" href="/categorias/new">Cadastrar Categoria</a>
-                    <a class="dropdown-item" href="/categorias">Listar Categorias</a>
-                </div>
-            </li>
-
-            <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownProdutos" role="button"
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Produtos
@@ -68,6 +58,11 @@
                 </div>
             </li>
         </ul>
+        <% } else { %>
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item"><a class="nav-link" href="/">Início</a></li>
+        </ul>
+        <% } %>
         <ul class="navbar-nav">
             <% if (user) { %>
                 <li class="nav-item d-flex align-items-center mr-2">

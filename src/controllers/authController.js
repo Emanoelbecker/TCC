@@ -36,7 +36,7 @@ const authController = {
                     if (saveError) {
                         return next(saveError);
                     }
-                    return res.redirect('/');
+                    return res.redirect('/dashboard');
                 });
             });
         } catch (error) {

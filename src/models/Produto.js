@@ -14,24 +14,8 @@ const Produto = sequelize.define('Produto', {
         allowNull: false,
         validate: { notEmpty: true, len: [1, 150] },
     },
-    dataLote: { type: DataTypes.DATEONLY, allowNull: true, validate: { isDate: true } },
-    dataValidade: { type: DataTypes.DATEONLY, allowNull: true, validate: { isDate: true } },
-    dataFabricacao: { type: DataTypes.DATEONLY, allowNull: true, validate: { isDate: true } },
     observacao: { type: DataTypes.TEXT, allowNull: true },
-    foto: {
-        type: DataTypes.STRING(2048),
-        allowNull: true,
-        validate: {
-            len: [0, 2048],
-            isUrl: { args: { protocols: ['http', 'https'], require_protocol: true } },
-        },
-    },
     valor: {
-        type: DataTypes.DECIMAL(10, 2),
-        allowNull: true,
-        validate: { validateMoney },
-    },
-    valorUnidade: {
         type: DataTypes.DECIMAL(10, 2),
         allowNull: true,
         validate: { validateMoney },

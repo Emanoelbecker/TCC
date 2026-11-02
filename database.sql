@@ -35,13 +35,8 @@ CREATE TABLE IF NOT EXISTS Cliente (
 CREATE TABLE IF NOT EXISTS Produto (
     idProduto INT NOT NULL AUTO_INCREMENT,
     nome VARCHAR(150) NOT NULL,
-    dataLote DATE NULL,
-    dataValidade DATE NULL,
-    dataFabricacao DATE NULL,
     observacao TEXT NULL,
-    foto VARCHAR(2048) NULL,
     valor DECIMAL(10,2) NULL,
-    valorUnidade DECIMAL(10,2) NULL,
     ingredientes TEXT NULL,
     PRIMARY KEY (idProduto)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

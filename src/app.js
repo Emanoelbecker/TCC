@@ -13,7 +13,6 @@ const authRoutes = require('./routes/authRoutes');
 const indexRoutes = require('./routes/indexRoutes');
 const userRoutes = require('./routes/userRoutes');
 const produtoRoutes = require('./routes/produtoRoutes');
-const categoriaRoutes = require('./routes/categoriaRoutes');
 const clienteRoutes = require('./routes/clienteRoutes');
 const vendaRoutes = require('./routes/vendaRoutes');
 const seedTestUser = require('./services/seedTestUser');
@@ -72,7 +71,6 @@ app.use(['/dashboard', '/clientes', '/produtos', '/vendas'], authMiddleware.ensu
 app.use('/', indexRoutes);
 app.use('/users', authMiddleware.ensureAuthenticated, userRoutes);
 app.use('/produtos', produtoRoutes);
-app.use('/categorias', authMiddleware.ensureAuthenticated, categoriaRoutes);
 app.use('/clientes', clienteRoutes);
 app.use('/vendas', vendaRoutes);
 app.use(errorMiddleware.notFoundHandler);

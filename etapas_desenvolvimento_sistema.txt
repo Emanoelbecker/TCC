@@ -345,13 +345,8 @@ Funcionalidades:
 
 Campos:
 - nome
-- dataLote
-- dataValidade
-- dataFabricacao
 - observacao
-- foto
 - valor
-- valorUnidade
 - ingredientes
 
 Tarefas:
@@ -365,10 +360,6 @@ Tarefas:
 8. Exclusão.
 9. Validações.
 10. Testes.
-
-Observação:
-A foto será inicialmente armazenada como URL. Não implementar upload de
-arquivos nesta etapa.
 
 Critério de conclusão:
 O administrador consegue realizar o CRUD completo de produtos.
@@ -615,53 +606,7 @@ O sistema possui proteção básica adequada ao seu escopo.
 FASE 20 — TESTES
 ============================================================
 
-Objetivo:
-Testar cada funcionalidade antes da publicação.
 
-Testar:
-
-LOGIN
-- Login correto.
-- Login incorreto.
-- Logout.
-- Acesso sem autenticação.
-
-CLIENTE
-- Criar.
-- Listar.
-- Visualizar.
-- Editar.
-- Excluir.
-- CPF duplicado.
-- CNPJ duplicado.
-- Dados inválidos.
-
-PRODUTO
-- Criar.
-- Listar.
-- Visualizar.
-- Editar.
-- Excluir.
-- Valores inválidos.
-
-VENDA
-- Criar venda.
-- Associar cliente.
-- Adicionar produto.
-- Alterar quantidade.
-- Calcular subtotal.
-- Calcular total.
-- Editar venda.
-- Excluir venda.
-
-RELACIONAMENTOS
-- Venda inexistente.
-- Cliente inexistente.
-- Produto inexistente.
-- Exclusão de registros relacionados.
-
-Critério de conclusão:
-Todas as funcionalidades principais passaram pelos testes definidos.
 
 
 ============================================================

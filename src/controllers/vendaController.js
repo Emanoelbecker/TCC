@@ -33,9 +33,14 @@ function formItems(body) {
     const quantities = Array.isArray(submittedQuantities) ? submittedQuantities : [submittedQuantities || ''];
 
     if (productIds.length !== quantities.length) return null;
+    const submittedUnitValues = body.valorUnitario ?? body['valorUnitario[]'];
+    const unitValues = Array.isArray(submittedUnitValues) ? submittedUnitValues : [submittedUnitValues || ''];
+
+    if (productIds.length !== unitValues.length) return null;
     return productIds.map((idProduto, index) => ({
         idProduto: typeof idProduto === 'string' ? idProduto.trim() : '',
         quantidade: typeof quantities[index] === 'string' ? quantities[index].trim() : '',
+        valorUnitario: typeof unitValues[index] === 'string' ? unitValues[index].trim() : '',
     }));
 }
 
@@ -81,7 +86,7 @@ async function renderForm(res, venda, errors, status = 200) {
         const [clientes, produtos] = await Promise.all([
             Cliente.findAll({ order: [['nome', 'ASC'], ['idCliente', 'ASC']] }),
             Produto.findAll({
-                attributes: ['idProduto', 'nome', 'valorUnidade'],
+                attributes: ['idProduto', 'nome'],
                 order: [['nome', 'ASC'], ['idProduto', 'ASC']],
             }),
         ]);
@@ -108,14 +113,13 @@ async function findSale(req, res) {
     return venda;
 }
 
-function saleItemsFromForm(itens, produtosPorId) {
+function saleItemsFromForm(itens) {
     let totalCents = 0n;
     const itensVenda = [];
     for (const item of itens) {
-        const produto = produtosPorId.get(Number(item.idProduto));
-        const valorUnitarioCents = moneyToCents(produto.valorUnidade);
+        const valorUnitarioCents = moneyToCents(item.valorUnitario);
         if (valorUnitarioCents === null) {
-            return { error: `O produto ${produto.nome} não possui um valor por unidade válido.` };
+            return { error: 'Informe um valor por unidade válido para cada produto.' };
         }
         totalCents += valorUnitarioCents * BigInt(item.quantidade);
         if (totalCents > MAX_MONEY_CENTS) return { error: 'O valor total da venda excede o limite permitido.' };
@@ -183,9 +187,9 @@ const vendaController = {
             const itensVenda = [];
             for (const item of itens) {
                 const produto = produtosPorId.get(Number(item.idProduto));
-                const valorUnitarioCents = moneyToCents(produto.valorUnidade);
+                const valorUnitarioCents = moneyToCents(item.valorUnitario);
                 if (valorUnitarioCents === null) {
-                    return renderForm(res, venda, [`O produto ${produto.nome} não possui um valor por unidade válido.`], 422);
+                    return renderForm(res, venda, ['Informe um valor por unidade válido para cada produto.'], 422);
                 }
 
                 const subtotalCents = valorUnitarioCents * BigInt(item.quantidade);
@@ -247,6 +251,7 @@ const vendaController = {
             venda.itens = venda.itensVenda.map((item) => ({
                 idProduto: item.idProduto,
                 quantidade: String(item.quantidade),
+                valorUnitario: String(item.valorUnitario),
             }));
             return renderForm(res, venda, []);
         } catch (error) {
@@ -285,7 +290,7 @@ const vendaController = {
             if (productIds.some((idProduto) => !produtosPorId.has(idProduto))) {
                 return renderForm(res, vendaData, ['Um ou mais produtos selecionados não existem.'], 422);
             }
-            const calculated = saleItemsFromForm(itens, produtosPorId);
+            const calculated = saleItemsFromForm(itens);
             if (calculated.error) return renderForm(res, vendaData, [calculated.error], 422);
 
             await sequelize.transaction(async (transaction) => {

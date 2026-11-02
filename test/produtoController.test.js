@@ -64,7 +64,11 @@ test('cria produto com campos normalizados e redireciona aos detalhes', async ()
         return { idProduto: 12 };
     };
     const req = {
-        body: { nome: '  Chá  ', valor: '12.50', observacao: '  lote novo ' },
+        body: {
+            nome: '  Chá  ', valor: '12.50', observacao: '  lote novo ',
+            dataLote: '2026-01-01', dataValidade: '2027-01-01', dataFabricacao: '2025-01-01', valorUnidade: '2.50',
+            foto: 'https://example.com/chá.jpg',
+        },
         session: {},
     };
     const res = makeResponse();
@@ -75,6 +79,11 @@ test('cria produto com campos normalizados e redireciona aos detalhes', async ()
     assert.equal(received.valor, '12.50');
     assert.equal(received.observacao, 'lote novo');
     assert.equal(received.ingredientes, null);
+    assert.equal(Object.hasOwn(received, 'dataLote'), false);
+    assert.equal(Object.hasOwn(received, 'dataValidade'), false);
+    assert.equal(Object.hasOwn(received, 'dataFabricacao'), false);
+    assert.equal(Object.hasOwn(received, 'valorUnidade'), false);
+    assert.equal(Object.hasOwn(received, 'foto'), false);
     assert.equal(res.location, '/produtos/12');
     assert.equal(req.session.successMessage, 'Produto cadastrado com sucesso.');
 });
@@ -173,12 +182,7 @@ test('não exclui produto que tenha itens de venda vinculados', async () => {
     assert.equal(req.session.errorMessage, 'Este produto possui vendas vinculadas e não pode ser excluído.');
 });
 
-test('model valida URL da foto e limites de valores monetários', async () => {
-    const invalidPhoto = Produto.build({ nome: 'Produto', foto: 'javascript:alert(1)' });
-    await assert.rejects(invalidPhoto.validate(), (error) => (
-        error.name === 'SequelizeValidationError' && error.errors.some((item) => item.path === 'foto')
-    ));
-
+test('model valida limites de valores monetários', async () => {
     for (const value of ['abc', '1.234', '100000000', '-1']) {
         const invalidValue = Produto.build({ nome: 'Produto', valor: value });
         await assert.rejects(invalidValue.validate(), (error) => (

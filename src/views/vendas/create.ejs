@@ -55,13 +55,13 @@
         <div id="sale-items">
             <% (venda.itens && venda.itens.length ? venda.itens : [{ idProduto: '', quantidade: '1' }]).forEach((item, index) => { %>
                 <div class="form-row align-items-end sale-item mb-2">
-                    <div class="form-group col-md-6 mb-md-0">
+                    <div class="form-group col-md-5 mb-md-0">
                         <label for="idProduto-<%= index %>">Produto <span aria-hidden="true">*</span></label>
                         <select class="form-control product-select" id="idProduto-<%= index %>" name="idProduto[]" required>
                             <option value="">Selecione um produto</option>
                             <% produtos.forEach((produto) => { %>
-                                <option value="<%= produto.idProduto %>" data-unit-price="<%= produto.valorUnidade ?? '' %>" <%= String(item.idProduto || '') === String(produto.idProduto) ? 'selected' : '' %>>
-                                    <%= produto.nome %> - <%= produto.valorUnidade == null ? 'valor por unidade não informado' : `R$ ${produto.valorUnidade}` %>
+                                <option value="<%= produto.idProduto %>" <%= String(item.idProduto || '') === String(produto.idProduto) ? 'selected' : '' %>>
+                                    <%= produto.nome %>
                                 </option>
                             <% }) %>
                         </select>
@@ -70,7 +70,11 @@
                         <label for="quantidade-<%= index %>">Quantidade <span aria-hidden="true">*</span></label>
                         <input class="form-control item-quantity" id="quantidade-<%= index %>" name="quantidade[]" type="number" min="1" step="1" required value="<%= item.quantidade || '1' %>">
                     </div>
-                    <div class="form-group col-md-3 mb-md-0">
+                    <div class="form-group col-md-2 mb-md-0">
+                        <label for="valorUnitario-<%= index %>">Valor unitário <span aria-hidden="true">*</span></label>
+                        <input class="form-control item-unit-price" id="valorUnitario-<%= index %>" name="valorUnitario[]" type="number" min="0" step="0.01" required value="<%= item.valorUnitario || '' %>">
+                    </div>
+                    <div class="form-group col-md-2 mb-md-0">
                         <span class="d-block small text-muted">Subtotal</span>
                         <output class="item-subtotal">R$ 0,00</output>
                     </div>
@@ -106,9 +110,8 @@
         function refreshTotal() {
             let total = 0n;
             items.querySelectorAll('.sale-item').forEach((row) => {
-                const select = row.querySelector('.product-select');
                 const quantity = row.querySelector('.item-quantity').value;
-                const price = priceInCents(select.selectedOptions[0]?.dataset.unitPrice || '');
+                const price = priceInCents(row.querySelector('.item-unit-price').value);
                 const subtotal = price !== null && /^\d+$/.test(quantity) && Number(quantity) > 0
                     ? price * BigInt(quantity)
                     : 0n;
@@ -124,6 +127,8 @@
                 row.querySelector('label[for^="idProduto-"]').htmlFor = `idProduto-${index}`;
                 row.querySelector('.item-quantity').id = `quantidade-${index}`;
                 row.querySelector('label[for^="quantidade-"]').htmlFor = `quantidade-${index}`;
+                row.querySelector('.item-unit-price').id = `valorUnitario-${index}`;
+                row.querySelector('label[for^="valorUnitario-"]').htmlFor = `valorUnitario-${index}`;
             });
         }
 
@@ -135,6 +140,7 @@
                 const row = event.target.closest('.sale-item');
                 row.querySelector('.product-select').selectedIndex = 0;
                 row.querySelector('.item-quantity').value = '1';
+                row.querySelector('.item-unit-price').value = '';
             } else {
                 event.target.closest('.sale-item').remove();
             }
@@ -145,6 +151,7 @@
             const row = items.querySelector('.sale-item').cloneNode(true);
             row.querySelector('.product-select').selectedIndex = 0;
             row.querySelector('.item-quantity').value = '1';
+            row.querySelector('.item-unit-price').value = '';
             items.appendChild(row);
             updateRowLabels();
             refreshTotal();

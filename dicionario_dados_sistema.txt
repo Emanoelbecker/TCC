@@ -125,35 +125,11 @@ Restrições: NOT NULL
 Exemplo: Bolacha de limão
 Descrição: Nome do produto.
 
-Campo: dataLote
-Tipo: DATE
-Restrições: -
-Exemplo: 2025-12-22
-Descrição: Data relacionada ao lote.
-
-Campo: dataValidade
-Tipo: DATE
-Restrições: -
-Exemplo: 2027-06-12
-Descrição: Data de validade do produto.
-
-Campo: dataFabricacao
-Tipo: DATE
-Restrições: -
-Exemplo: 2025-06-02
-Descrição: Data de fabricação do produto.
-
 Campo: observacao
 Tipo: TEXT
 Restrições: -
 Exemplo: Contém ovos.
 Descrição: Observações sobre o produto.
-
-Campo: foto
-Tipo: VARCHAR(2048)
-Restrições: -
-Exemplo: https://...
-Descrição: Link/URL da foto do produto.
 
 Campo: valor
 Tipo: DECIMAL(10,2)
@@ -161,21 +137,11 @@ Restrições: -
 Exemplo: 20.30
 Descrição: Valor do produto.
 
-Campo: valorUnidade
-Tipo: DECIMAL(10,2)
-Restrições: -
-Exemplo: 10.15
-Descrição: Valor por unidade.
-
 Campo: ingredientes
 Tipo: TEXT
 Restrições: -
 Exemplo: Ovos, farinha, etc.
 Descrição: Ingredientes do produto.
-
-Observação:
-É necessário definir nas regras de negócio exatamente a diferença entre "valor" e "valorUnidade".
-
 
 4. TABELA VENDA
 
@@ -377,13 +343,8 @@ Cliente
 Produto
 - idProduto
 - nome
-- dataLote
-- dataValidade
-- dataFabricacao
 - observacao
-- foto
 - valor
-- valorUnidade
 - ingredientes
 
 Venda

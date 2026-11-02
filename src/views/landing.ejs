@@ -1,0 +1,169 @@
+<style>
+    .public-home { --home-ink: #183d3a; --home-muted: #65736e; }
+    .public-showcase { margin-bottom: 2.5rem; }
+    .public-showcase .carousel-inner { overflow: hidden; border-radius: 6px; }
+    .showcase-slide {
+        position: relative;
+        display: flex;
+        min-height: 360px;
+        align-items: center;
+        overflow: hidden;
+        padding: 3.5rem;
+        color: #fff;
+        background: #183d3a;
+    }
+    .showcase-slide::before, .showcase-slide::after {
+        position: absolute;
+        content: "";
+        pointer-events: none;
+    }
+    .showcase-slide::before {
+        inset: 0 0 0 48%;
+        background: linear-gradient(125deg, transparent 0 12%, rgba(255,255,255,.08) 12% 44%, transparent 44%),
+            radial-gradient(ellipse at 65% 45%, rgba(255,255,255,.17), transparent 58%);
+    }
+    .showcase-slide::after {
+        width: 19rem;
+        height: 19rem;
+        right: 9%;
+        top: 50%;
+        border: 1px solid rgba(255,255,255,.22);
+        border-radius: 50%;
+        transform: translateY(-50%);
+    }
+    .showcase-slide.slide-coral { background: #8d4939; }
+    .showcase-slide.slide-blue { background: #315c68; }
+    .showcase-copy { position: relative; z-index: 1; max-width: 540px; }
+    .showcase-kicker {
+        margin-bottom: .8rem;
+        color: #f4bd8d;
+        font-size: .78rem;
+        font-weight: 700;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+    }
+    .showcase-copy h1, .showcase-copy h2 { color: #fff; font-size: 2.4rem; font-weight: 700; }
+    .showcase-copy p { max-width: 480px; margin-bottom: 0; color: rgba(255,255,255,.86); font-size: 1.05rem; }
+    .showcase-art {
+        position: absolute;
+        z-index: 1;
+        top: 50%;
+        right: 13%;
+        display: grid;
+        width: 220px;
+        height: 260px;
+        align-content: center;
+        gap: 12px;
+        padding: 22px;
+        border: 1px solid rgba(255,255,255,.38);
+        border-radius: 6px;
+        background: rgba(255,255,255,.94);
+        box-shadow: 0 24px 60px rgba(0,0,0,.18);
+        transform: translateY(-50%) rotate(3deg);
+    }
+    .showcase-art span { display: block; height: 13px; border-radius: 2px; background: #dce7e1; }
+    .showcase-art span:first-child { width: 58%; height: 32px; background: #d46b45; }
+    .showcase-art span:nth-child(3) { width: 76%; }
+    .showcase-art span:nth-child(4) { width: 90%; }
+    .showcase-art span:last-child { width: 48%; height: 30px; margin-top: 12px; background: #28534e; }
+    .showcase-indicators { bottom: 1rem; }
+    .showcase-control { width: 8%; }
+    .showcase-control span { filter: drop-shadow(0 1px 3px rgba(0,0,0,.6)); }
+    .home-sections { margin-top: 0; }
+    .home-section-card { height: 100%; border-top: 3px solid #d46b45 !important; }
+    .home-section-card h2 { margin-bottom: .8rem; font-size: 1.2rem; }
+    .home-section-card p { margin-bottom: 0; color: var(--home-muted); line-height: 1.7; }
+    @media (max-width: 767.98px) {
+        .showcase-slide { min-height: 400px; align-items: flex-start; padding: 2rem 2.5rem 5rem; }
+        .showcase-copy { max-width: 100%; }
+        .showcase-copy h1, .showcase-copy h2 { font-size: 1.8rem; }
+        .showcase-copy p { font-size: .95rem; }
+        .showcase-art { top: auto; right: 12%; bottom: 1.2rem; width: 130px; height: 88px; gap: 5px; padding: 10px; transform: rotate(3deg); }
+        .showcase-art span { height: 6px; }
+        .showcase-art span:first-child { height: 14px; }
+        .showcase-art span:last-child { height: 12px; margin-top: 2px; }
+        .showcase-slide::after { width: 11rem; height: 11rem; top: auto; right: 8%; bottom: -3rem; transform: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .public-showcase .carousel-item { transition: none; }
+    }
+</style>
+
+<div class="public-home">
+    <section class="public-showcase" aria-label="Destaques">
+        <div id="publicShowcase" class="carousel slide" data-ride="carousel" data-interval="6000">
+            <ol class="carousel-indicators showcase-indicators">
+                <li data-target="#publicShowcase" data-slide-to="0" class="active" aria-label="Slide 1"></li>
+                <li data-target="#publicShowcase" data-slide-to="1" aria-label="Slide 2"></li>
+                <li data-target="#publicShowcase" data-slide-to="2" aria-label="Slide 3"></li>
+            </ol>
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <div class="showcase-slide">
+                        <div class="showcase-copy">
+                            <p class="showcase-kicker">Gestão Comercial</p>
+                            <h1>Mais clareza para cuidar do seu negócio</h1>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Organize as informações e acompanhe cada etapa com tranquilidade.</p>
+                        </div>
+                        <div class="showcase-art" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <div class="showcase-slide slide-coral">
+                        <div class="showcase-copy">
+                            <p class="showcase-kicker">Relacionamento</p>
+                            <h2>Informações importantes, sempre por perto</h2>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Tenha uma visão simples dos cadastros e mantenha tudo em ordem.</p>
+                        </div>
+                        <div class="showcase-art" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <div class="showcase-slide slide-blue">
+                        <div class="showcase-copy">
+                            <p class="showcase-kicker">Acompanhamento</p>
+                            <h2>Uma rotina comercial mais organizada</h2>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Consulte seus registros e acompanhe o movimento em um só lugar.</p>
+                        </div>
+                        <div class="showcase-art" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+                    </div>
+                </div>
+            </div>
+            <a class="carousel-control-prev showcase-control" href="#publicShowcase" role="button" data-slide="prev" aria-label="Slide anterior">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            </a>
+            <a class="carousel-control-next showcase-control" href="#publicShowcase" role="button" data-slide="next" aria-label="Próximo slide">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            </a>
+        </div>
+    </section>
+
+    <section class="home-sections" aria-label="Informações">
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <article class="card home-section-card">
+                    <div class="card-body">
+                        <h2>Organização</h2>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse potenti. Aenean vitae sem sed justo feugiat commodo.</p>
+                    </div>
+                </article>
+            </div>
+            <div class="col-md-4 mb-3">
+                <article class="card home-section-card">
+                    <div class="card-body">
+                        <h2>Acompanhamento</h2>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer consequat, neque at facilisis pretium, metus arcu tempor erat.</p>
+                    </div>
+                </article>
+            </div>
+            <div class="col-md-4 mb-3">
+                <article class="card home-section-card">
+                    <div class="card-body">
+                        <h2>Visão do negócio</h2>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur vel quam id erat commodo porta non nec urna.</p>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+</div>

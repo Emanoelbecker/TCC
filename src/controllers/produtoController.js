@@ -2,14 +2,12 @@ const Produto = require('../models/Produto');
 const { internalError, notFound } = require('../utils/httpResponses');
 
 const fields = [
-    'nome', 'dataLote', 'dataValidade', 'dataFabricacao', 'observacao',
-    'foto', 'valor', 'valorUnidade', 'ingredientes',
+    'nome', 'observacao', 'valor', 'ingredientes',
 ];
 
 const labels = {
-    nome: 'Nome', dataLote: 'Data do lote', dataValidade: 'Data de validade',
-    dataFabricacao: 'Data de fabricação', observacao: 'Observação', foto: 'Foto',
-    valor: 'Valor', valorUnidade: 'Valor por unidade', ingredientes: 'Ingredientes',
+    nome: 'Nome', observacao: 'Observação',
+    valor: 'Valor', ingredientes: 'Ingredientes',
 };
 
 function productData(body) {
@@ -32,9 +30,6 @@ function validationMessages(error) {
 
     return error.errors.map((item) => {
         const label = labels[item.path] || item.path;
-        if (item.path === 'foto' && item.validatorKey === 'isUrl') {
-            return 'Foto deve ser uma URL válida (http ou https).';
-        }
         if (item.validatorKey === 'validateMoney') {
             return `${label} deve ser não negativo e ter no máximo duas casas decimais.`;
         }

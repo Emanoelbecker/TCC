@@ -2,6 +2,23 @@ const { Cliente, Produto, Venda } = require('../models');
 const { internalError } = require('../utils/httpResponses');
 
 const homeController = {
+    renderLanding(req, res) {
+        return res.render('landing', { publicPage: true, currentPage: 'home' });
+    },
+
+    async renderProducts(req, res) {
+        try {
+            const produtos = await Produto.findAll({ order: [['nome', 'ASC'], ['idProduto', 'ASC']] });
+            return res.render('public-products', {
+                produtos,
+                publicPage: true,
+                currentPage: 'products',
+            });
+        } catch (error) {
+            return internalError(res, 'Não foi possível carregar os produtos.');
+        }
+    },
+
     async renderHome(req, res) {
         try {
             const [quantidadeClientes, quantidadeProdutos, quantidadeVendas, valorTotalVendido, ultimasVendas] = await Promise.all([

@@ -101,8 +101,8 @@ test('cria venda associada a um cliente existente', async () => {
         return { idCliente: id, nome: 'Ana' };
     };
     Produto.findAll = async () => [
-        { idProduto: 11, nome: 'Produto A', valorUnidade: '20.00' },
-        { idProduto: 12, nome: 'Produto B', valorUnidade: '30.00' },
+        { idProduto: 11, nome: 'Produto A' },
+        { idProduto: 12, nome: 'Produto B' },
     ];
     Venda.create = async (data, options) => {
         assert.deepEqual(options, { transaction: {} });
@@ -122,7 +122,7 @@ test('cria venda associada a um cliente existente', async () => {
             observacao: '  Entregar pela manhã  ',
             idProduto: ['11', '12'],
             quantidade: ['10', '5'],
-            valorUnitario: ['0.01', '0.01'],
+            valorUnitario: ['20.00', '30.00'],
         },
         session: {},
     };
@@ -200,7 +200,7 @@ test('atualiza os dados e substitui itens dentro de uma transação', async () =
     };
     Venda.findByPk = async () => sale;
     Cliente.findByPk = async () => ({ idCliente: 3 });
-    Produto.findAll = async () => [{ idProduto: 11, nome: 'Produto A', valorUnidade: '20.00' }];
+    Produto.findAll = async () => [{ idProduto: 11, nome: 'Produto A' }];
     ItemVenda.destroy = async (options) => operations.push(['remove-items', options]);
     ItemVenda.bulkCreate = async (items, options) => operations.push(['create-items', items, options]);
     sequelize.transaction = async (callback) => callback(transaction);
@@ -214,6 +214,7 @@ test('atualiza os dados e substitui itens dentro de uma transação', async () =
             observacao: 'Atualizada',
             idProduto: ['11'],
             quantidade: ['2'],
+            valorUnitario: ['20.00'],
         },
         session: {},
     };
@@ -344,10 +345,10 @@ test('recusa produto inexistente antes de criar venda', async () => {
 test('recusa data impossível com mensagem compreensível', async () => {
     Cliente.findByPk = async (id) => ({ idCliente: id, nome: 'Ana' });
     Cliente.findAll = async () => [{ idCliente: 3, nome: 'Ana' }];
-    Produto.findAll = async () => [{ idProduto: 11, nome: 'Produto A', valorUnidade: '20.00' }];
+    Produto.findAll = async () => [{ idProduto: 11, nome: 'Produto A' }];
     Venda.create = async (data) => Venda.build(data).validate();
     const req = {
-        body: { idCliente: '3', dataPedido: '2026-02-30', idProduto: '11', quantidade: '1' },
+        body: { idCliente: '3', dataPedido: '2026-02-30', idProduto: '11', quantidade: '1', valorUnitario: '20.00' },
         session: {},
     };
     const res = makeResponse();
@@ -361,7 +362,7 @@ test('recusa data impossível com mensagem compreensível', async () => {
 test('devolve erros de validação da venda para o formulário', async () => {
     Cliente.findByPk = async (id) => ({ idCliente: id, nome: 'Ana' });
     Cliente.findAll = async () => [{ idCliente: 3, nome: 'Ana' }];
-    Produto.findAll = async () => [{ idProduto: 11, nome: 'Produto A', valorUnidade: '20.00' }];
+    Produto.findAll = async () => [{ idProduto: 11, nome: 'Produto A' }];
     Venda.create = async () => {
         const error = new Error('missing order date');
         error.name = 'SequelizeValidationError';
@@ -369,7 +370,7 @@ test('devolve erros de validação da venda para o formulário', async () => {
         throw error;
     };
     const req = {
-        body: { idCliente: '3', dataPedido: '', idProduto: '11', quantidade: '1' },
+        body: { idCliente: '3', dataPedido: '', idProduto: '11', quantidade: '1', valorUnitario: '20.00' },
         session: {},
     };
     const res = makeResponse();
@@ -384,15 +385,16 @@ test('devolve erros de validação da venda para o formulário', async () => {
 test('renderiza o formulário com seletor e cliente disponível', async () => {
     const html = await ejs.renderFile(path.join(__dirname, '../src/views/vendas/create.ejs'), {
         csrfToken: 'test-token',
-        venda: { idCliente: 3, dataPedido: '2026-10-05', itens: [{ idProduto: 11, quantidade: '2' }] },
+        venda: { idCliente: 3, dataPedido: '2026-10-05', itens: [{ idProduto: 11, quantidade: '2', valorUnitario: '20.00' }] },
         clientes: [{ idCliente: 3, nome: 'Ana', nomeFantasia: 'Loja' }],
-        produtos: [{ idProduto: 11, nome: 'Produto A', valorUnidade: '20.00' }],
+        produtos: [{ idProduto: 11, nome: 'Produto A' }],
         errors: [],
     });
 
     assert.match(html, /name="idCliente"/);
     assert.match(html, /name="idProduto\[\]"/);
     assert.match(html, /name="quantidade\[\]"/);
+    assert.match(html, /name="valorUnitario\[\]"/);
     assert.match(html, /Adicionar produto/);
     assert.match(html, /Total previsto/);
     assert.match(html, /Ana/);

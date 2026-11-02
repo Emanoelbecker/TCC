@@ -156,7 +156,7 @@ test('faz login válido regenerando e salvando a sessão', async () => {
     assert.equal(regenerated, true);
     assert.equal(saved, true);
     assert.deepEqual(req.session.user, { id: 4, username: 'admin', role: 'admin' });
-    assert.equal(res.location, '/');
+    assert.equal(res.location, '/dashboard');
 });
 
 test('faz logout encerrando sessão e limpando cookie', () => {
