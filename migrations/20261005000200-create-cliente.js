@@ -2,7 +2,15 @@
 
 module.exports = {
     async up(queryInterface, Sequelize) {
-        await queryInterface.createTable('Cliente', {
+        let tableExists = true;
+        try {
+            await queryInterface.describeTable('Cliente');
+        } catch (error) {
+            if (error.message && error.message.includes('doesn\'t exist')) tableExists = false;
+            else tableExists = false;
+        }
+
+        if (!tableExists) await queryInterface.createTable('Cliente', {
             idCliente: {
                 type: Sequelize.INTEGER,
                 allowNull: false,
@@ -27,16 +35,23 @@ module.exports = {
             collate: 'utf8mb4_unicode_ci',
         });
 
-        await queryInterface.addConstraint('Cliente', {
-            fields: ['cpf'],
-            type: 'unique',
-            name: 'uq_cliente_cpf',
-        });
-        await queryInterface.addConstraint('Cliente', {
-            fields: ['cnpj'],
-            type: 'unique',
-            name: 'uq_cliente_cnpj',
-        });
+        const indexes = await queryInterface.showIndex('Cliente');
+        const indexNames = new Set(indexes.map((index) => index.name));
+
+        if (!indexNames.has('uq_cliente_cpf')) {
+            await queryInterface.addConstraint('Cliente', {
+                fields: ['cpf'],
+                type: 'unique',
+                name: 'uq_cliente_cpf',
+            });
+        }
+        if (!indexNames.has('uq_cliente_cnpj')) {
+            await queryInterface.addConstraint('Cliente', {
+                fields: ['cnpj'],
+                type: 'unique',
+                name: 'uq_cliente_cnpj',
+            });
+        }
     },
 
     async down(queryInterface) {

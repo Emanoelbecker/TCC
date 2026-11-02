@@ -11,6 +11,7 @@
     <thead>
         <tr>
             <th scope="col">ID</th>
+            <th scope="col">Foto</th>
             <th scope="col">Nome</th>
             <th scope="col">Valor</th>
             <th scope="col">Ações</th>
@@ -20,6 +21,7 @@
         <% produtos.forEach(produto => { %>
             <tr>
                 <td><%= produto.idProduto %></td>
+                <td><% if (produto.foto) { %><img src="/uploads/produtos/<%= produto.foto %>" alt="<%= produto.nome %>" style="width:64px;height:64px;object-fit:cover"><% } else { %>-<% } %></td>
                 <td><%= produto.nome %></td>
                 <td><%= produto.valor ?? '-' %></td>
                 <td>

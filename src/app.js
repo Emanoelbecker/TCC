@@ -9,6 +9,7 @@ const session = require('express-session');
 const authMiddleware = require('./middlewares/authMiddleware');
 const csrfProtection = require('./middlewares/csrfMiddleware');
 const errorMiddleware = require('./middlewares/errorMiddleware');
+const produtoUpload = require('./middlewares/produtoUploadMiddleware');
 const authRoutes = require('./routes/authRoutes');
 const indexRoutes = require('./routes/indexRoutes');
 const userRoutes = require('./routes/userRoutes');
@@ -34,6 +35,7 @@ app.use(expressLayouts);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
+app.use(express.static(path.join(__dirname, '..', 'public')));
 
 app.use(session({
     secret: sessionSecret,
@@ -46,6 +48,7 @@ app.use(session({
         sameSite: 'lax',
     },
 }));
+app.use(produtoUpload);
 app.use(csrfProtection);
 
 app.use((req, res, next) => {

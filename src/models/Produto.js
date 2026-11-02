@@ -21,6 +21,7 @@ const Produto = sequelize.define('Produto', {
         validate: { validateMoney },
     },
     ingredientes: { type: DataTypes.TEXT, allowNull: true },
+    foto: { type: DataTypes.STRING(255), allowNull: true },
 }, {
     tableName: 'Produto',
     timestamps: false,

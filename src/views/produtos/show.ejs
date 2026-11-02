@@ -9,6 +9,9 @@
 	</div>
 </div>
 
+<% if (produto.foto) { %>
+<div class="mb-3"><img src="/uploads/produtos/<%= produto.foto %>" alt="Foto de <%= produto.nome %>" class="img-thumbnail" style="max-width: 320px; max-height: 320px;"></div>
+<% } %>
 <dl class="row">
 	<dt class="col-sm-3">Valor</dt><dd class="col-sm-9"><%= produto.valor ?? '-' %></dd>
 	<dt class="col-sm-3">Observação</dt><dd class="col-sm-9"><%= produto.observacao || '-' %></dd>

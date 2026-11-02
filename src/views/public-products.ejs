@@ -26,6 +26,7 @@
         transform: translateY(-3px);
         box-shadow: 0 8px 22px rgba(24, 61, 58, .12);
     }
+    .product-image { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
     .product-image-placeholder {
         display: grid;
         aspect-ratio: 4 / 3;
@@ -75,9 +76,13 @@
     <section class="product-grid" aria-label="Produtos disponíveis">
         <% produtos.forEach((produto) => { %>
             <article class="product-card">
-                <div class="product-image-placeholder" role="img" aria-label="Imagem indisponível para <%= produto.nome %>">
-                    <span>Imagem não disponível</span>
-                </div>
+                <% if (produto.foto) { %>
+                    <img class="product-image" src="/uploads/produtos/<%= produto.foto %>" alt="Foto de <%= produto.nome %>">
+                <% } else { %>
+                    <div class="product-image-placeholder" role="img" aria-label="Imagem indisponível para <%= produto.nome %>">
+                        <span>Imagem não disponível</span>
+                    </div>
+                <% } %>
                 <div class="product-card-body">
                     <h2><%= produto.nome %></h2>
                     <p class="product-price">

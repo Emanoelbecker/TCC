@@ -2,7 +2,10 @@
 
 module.exports = {
     async up(queryInterface, Sequelize) {
-        await queryInterface.createTable('ItemVenda', {
+        let tableExists = true;
+        try { await queryInterface.describeTable('ItemVenda'); } catch (_) { tableExists = false; }
+
+        if (!tableExists) await queryInterface.createTable('ItemVenda', {
             idItemVenda: {
                 type: Sequelize.INTEGER,
                 allowNull: false,
@@ -24,22 +27,21 @@ module.exports = {
             collate: 'utf8mb4_unicode_ci',
         });
 
-        await queryInterface.addConstraint('ItemVenda', {
-            fields: ['idVenda'],
-            type: 'foreign key',
-            name: 'fk_itemVenda_venda',
-            references: { table: 'Venda', field: 'idVenda' },
-            onUpdate: 'RESTRICT',
-            onDelete: 'RESTRICT',
-        });
-        await queryInterface.addConstraint('ItemVenda', {
-            fields: ['idProduto'],
-            type: 'foreign key',
-            name: 'fk_itemVenda_produto',
-            references: { table: 'Produto', field: 'idProduto' },
-            onUpdate: 'RESTRICT',
-            onDelete: 'RESTRICT',
-        });
+        for (const constraint of [
+            { fields: ['idVenda'], name: 'fk_itemVenda_venda', references: { table: 'Venda', field: 'idVenda' } },
+            { fields: ['idProduto'], name: 'fk_itemVenda_produto', references: { table: 'Produto', field: 'idProduto' } },
+        ]) {
+            try {
+                await queryInterface.addConstraint('ItemVenda', {
+                    ...constraint,
+                    type: 'foreign key',
+                    onUpdate: 'RESTRICT',
+                    onDelete: 'RESTRICT',
+                });
+            } catch (error) {
+                if (!/Duplicate (key name|foreign key constraint name)/i.test(error.message || '') && error.original?.errno !== 1061 && error.original?.errno !== 1826) throw error;
+            }
+        }
     },
 
     async down(queryInterface) {

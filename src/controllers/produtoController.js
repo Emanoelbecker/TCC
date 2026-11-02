@@ -1,5 +1,6 @@
 const Produto = require('../models/Produto');
 const { internalError, notFound } = require('../utils/httpResponses');
+const { validateProductImage, saveProductImage, removeProductImage } = require('../utils/productImage');
 
 const fields = [
     'nome', 'observacao', 'valor', 'ingredientes',
@@ -41,6 +42,12 @@ function validationMessages(error) {
     });
 }
 
+async function storeUploadedImage(file) {
+    if (!file) return null;
+    const extension = await validateProductImage(file);
+    return saveProductImage(file, extension);
+}
+
 async function findProduct(req, res) {
     if (!validId(req.params.id)) {
         notFound(res, 'Produto não encontrado.');
@@ -67,13 +74,20 @@ const produtoController = {
 
     async createProduto(req, res) {
         const produto = productData(req.body);
+        let savedFilename = null;
         try {
+            savedFilename = await storeUploadedImage(req.file);
+            if (savedFilename) produto.foto = savedFilename;
             const created = await Produto.create(produto);
             req.session.successMessage = 'Produto cadastrado com sucesso.';
             res.redirect(`/produtos/${created.idProduto}`);
         } catch (error) {
+            if (savedFilename) await removeProductImage(savedFilename);
             if (error.name === 'SequelizeValidationError') {
                 return res.status(422).render('produtos/create', { produto, errors: validationMessages(error) });
+            }
+            if (typeof error.message === 'string' && error.message.includes('imagem')) {
+                return res.status(422).render('produtos/create', { produto, errors: [error.message] });
             }
             internalError(res, 'Não foi possível cadastrar o produto.');
         }
@@ -98,19 +112,30 @@ const produtoController = {
     },
 
     async updateProduto(req, res) {
+        let savedFilename = null;
+        let previousFilename = null;
         try {
             const existingProduct = await findProduct(req, res);
             if (!existingProduct) return;
 
+            previousFilename = existingProduct.foto;
             const produto = productData(req.body);
             produto.idProduto = existingProduct.idProduto;
             try {
+                savedFilename = await storeUploadedImage(req.file);
+                if (savedFilename) produto.foto = savedFilename;
+                else if (req.body.removerFoto === '1') produto.foto = null;
                 await existingProduct.update(produto);
+                if (savedFilename || req.body.removerFoto === '1') await removeProductImage(previousFilename);
                 req.session.successMessage = 'Produto atualizado com sucesso.';
                 res.redirect(`/produtos/${existingProduct.idProduto}`);
             } catch (error) {
+                if (savedFilename) await removeProductImage(savedFilename);
                 if (error.name === 'SequelizeValidationError') {
                     return res.status(422).render('produtos/edit', { produto, errors: validationMessages(error) });
+                }
+                if (typeof error.message === 'string' && error.message.includes('imagem')) {
+                    return res.status(422).render('produtos/edit', { produto, errors: [error.message] });
                 }
                 internalError(res, 'Não foi possível atualizar o produto.');
             }
@@ -126,6 +151,7 @@ const produtoController = {
 
             try {
                 await produto.destroy();
+                await removeProductImage(produto.foto);
                 req.session.successMessage = 'Produto excluído com sucesso.';
                 res.redirect('/produtos');
             } catch (error) {
