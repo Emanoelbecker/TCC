@@ -9,7 +9,7 @@ const categoriaController = require('../src/controllers/categoriaController');
 
 const originalUserMethods = {};
 const originalCategoriaMethods = {};
-const userMethodNames = ['getAll', 'findById', 'delete'];
+const userMethodNames = ['create', 'getAll', 'findById', 'delete'];
 const categoriaMethodNames = ['create', 'findById', 'update', 'delete'];
 
 test.beforeEach(() => {
@@ -54,6 +54,21 @@ test('não expõe erro do banco ao carregar usuários', () => {
     assert.equal(res.statusCode, 500);
     assert.equal(res.view, 'errors/status');
     assert.equal(res.data.message, 'Não foi possível carregar os usuários.');
+});
+
+test('cadastra usuário sem cargo e define perfil de administrador', () => {
+    let createdUser;
+    User.create = (user, callback) => {
+        createdUser = user;
+        callback(null, 1);
+    };
+    const res = makeResponse();
+
+    userController.createUser({ body: { username: 'novo', password: 'senha-segura-123' } }, res);
+
+    assert.equal(createdUser.username, 'novo');
+    assert.equal(createdUser.role, 'admin');
+    assert.equal(res.location, '/users');
 });
 
 test('retorna 404 ao excluir usuário inexistente', () => {

@@ -3,39 +3,67 @@
     <a href="/clientes/new" class="btn btn-primary">Cadastrar cliente</a>
 </div>
 
-<% if (clientes.length === 0) { %>
-    <p>Nenhum cliente cadastrado.</p>
-<% } else { %>
-    <div class="table-responsive">
-        <table class="table table-striped">
-            <thead>
+<div class="form-group mb-3">
+    <label for="clientSearch">Buscar cliente:</label>
+    <input type="search" id="clientSearch" class="form-control" placeholder="Digite o nome do cliente" autocomplete="off">
+</div>
+<p id="clientEmptyState" <%= clientes.length > 0 ? 'hidden' : '' %>>
+    <%= clientes.length > 0 ? '' : 'Nenhum cliente cadastrado.' %>
+</p>
+<div class="table-responsive" id="clientTableContainer" <%= clientes.length > 0 ? '' : 'hidden' %>>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Nome</th>
+                <th scope="col">CPF/CNPJ</th>
+                <th scope="col">E-mail</th>
+                <th scope="col">Telefone</th>
+                <th scope="col">Ações</th>
+            </tr>
+        </thead>
+        <tbody id="clientTableBody">
+            <% clientes.forEach((cliente) => { %>
                 <tr>
-                    <th scope="col">Nome</th>
-                    <th scope="col">CPF/CNPJ</th>
-                    <th scope="col">E-mail</th>
-                    <th scope="col">Telefone</th>
-                    <th scope="col">Ações</th>
+                    <td><%= cliente.nome %></td>
+                    <td><%= cliente.cpf || cliente.cnpj || '-' %></td>
+                    <td><%= cliente.email || '-' %></td>
+                    <td><%= cliente.telefone || '-' %></td>
+                    <td class="text-nowrap">
+                        <a href="/clientes/<%= cliente.idCliente %>" class="btn btn-sm btn-outline-primary">Detalhes</a>
+                        <a href="/clientes/<%= cliente.idCliente %>/edit" class="btn btn-sm btn-outline-secondary">Editar</a>
+                        <form action="/clientes/<%= cliente.idCliente %>?_method=DELETE" method="POST" class="d-inline"
+                            onsubmit="return confirm('Excluir este cliente?');">
+                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                            <button type="submit" class="btn btn-sm btn-outline-danger">Excluir</button>
+                        </form>
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-                <% clientes.forEach((cliente) => { %>
-                    <tr>
-                        <td><%= cliente.nome %></td>
-                        <td><%= cliente.cpf || cliente.cnpj || '-' %></td>
-                        <td><%= cliente.email || '-' %></td>
-                        <td><%= cliente.telefone || '-' %></td>
-                        <td class="text-nowrap">
-                            <a href="/clientes/<%= cliente.idCliente %>" class="btn btn-sm btn-outline-primary">Detalhes</a>
-                            <a href="/clientes/<%= cliente.idCliente %>/edit" class="btn btn-sm btn-outline-secondary">Editar</a>
-                            <form action="/clientes/<%= cliente.idCliente %>?_method=DELETE" method="POST" class="d-inline"
-                                onsubmit="return confirm('Excluir este cliente?');">
-                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                                <button type="submit" class="btn btn-sm btn-outline-danger">Excluir</button>
-                            </form>
-                        </td>
-                    </tr>
-                <% }) %>
-            </tbody>
-        </table>
-    </div>
-<% } %>
+            <% }) %>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    const clientSearch = document.getElementById('clientSearch');
+    const clientTableBody = document.getElementById('clientTableBody');
+    const clientTableContainer = document.getElementById('clientTableContainer');
+    const clientEmptyState = document.getElementById('clientEmptyState');
+
+    clientSearch.addEventListener('input', function() {
+        const search = this.value.trim().normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase();
+        let visibleRows = 0;
+
+        Array.from(clientTableBody.rows).forEach((row) => {
+            const name = row.cells[0].textContent.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase();
+            row.hidden = !name.includes(search);
+            if (!row.hidden) visibleRows += 1;
+        });
+
+        const noResults = visibleRows === 0;
+        clientTableContainer.hidden = noResults;
+        clientEmptyState.hidden = !noResults;
+        clientEmptyState.textContent = search
+            ? 'Nenhum cliente encontrado.'
+            : 'Nenhum cliente cadastrado.';
+    });
+</script>

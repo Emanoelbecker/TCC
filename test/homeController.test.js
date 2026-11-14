@@ -140,6 +140,7 @@ test('catálogo público apresenta estado vazio e dados dos produtos', async () 
     assert.match(template, /Produto real/);
     assert.match(template, /R\$\s*19,90/);
     assert.match(template, /Imagem não disponível/);
+    assert.match(template, /Ingredientes:/);
     assert.match(template, /Informação complementar/);
     assert.match(emptyTemplate, /Nenhum produto disponível no momento/);
 });
@@ -169,13 +170,12 @@ test('layout público usa navegação própria e não expõe links administrativ
     assert.doesNotMatch(template, /\/clientes|\/vendas|Cadastrar Produto/);
 });
 
-test('template público inclui slides, controles e seções editáveis', async () => {
+test('página inicial pública apresenta uma foto e navegação para produtos e sobre', async () => {
     const template = await ejs.renderFile(path.join(__dirname, '../src/views/landing.ejs'));
 
-    assert.match(template, /id="publicShowcase"/);
-    assert.match(template, /Slide anterior/);
-    assert.match(template, /Próximo slide/);
-    assert.match(template, /data-slide-to="2"/);
-    assert.match(template, /Lorem ipsum/);
-    assert.match(template, /Visão do negócio/);
+    assert.match(template, /<nav class="home-navigation" aria-label="Navegação principal">/);
+    assert.match(template, /href="\/catalogo">\s*<span>Produtos<\/span>/);
+    assert.match(template, /href="\/sobre">\s*<span>Sobre<\/span>/);
+    assert.match(template, /alt="Seleção de bolachas artesanais"/);
+    assert.doesNotMatch(template, /carousel|Lorem ipsum|Visão do negócio/);
 });

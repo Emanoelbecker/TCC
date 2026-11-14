@@ -404,14 +404,24 @@ test('renderiza o formulário com seletor e cliente disponível', async () => {
 test('renderiza listagem e detalhes com os valores da venda', async () => {
     const indexHtml = await ejs.renderFile(path.join(__dirname, '../src/views/vendas/index.ejs'), {
         csrfToken: 'test-token',
-        vendas: [{
-            idVenda: 7,
-            cliente: { nome: 'Ana' },
-            dataPedido: '2026-10-05',
-            dataEntrega: '2026-10-10',
-            itensVenda: [{}, {}],
-            valorTotal: '39.80',
-        }],
+        vendas: [
+            {
+                idVenda: 7,
+                cliente: { nome: 'Ana' },
+                dataPedido: '2026-10-05',
+                dataEntrega: '2026-10-10',
+                itensVenda: [{}, {}],
+                valorTotal: '39.80',
+            },
+            {
+                idVenda: 8,
+                cliente: { nome: 'Ana' },
+                dataPedido: '2026-10-06',
+                dataEntrega: null,
+                itensVenda: [{}],
+                valorTotal: '19.90',
+            },
+        ],
     });
     const showHtml = await ejs.renderFile(path.join(__dirname, '../src/views/vendas/show.ejs'), {
         venda: {
@@ -432,6 +442,9 @@ test('renderiza listagem e detalhes com os valores da venda', async () => {
     });
 
     assert.match(indexHtml, /Ana/);
+    assert.match(indexHtml, /id="saleSearch"/);
+    assert.match(indexHtml, /\/vendas\/7/);
+    assert.match(indexHtml, /\/vendas\/8/);
     assert.match(indexHtml, /R\$ 39\.80/);
     assert.match(showHtml, /Produto A/);
     assert.match(showHtml, /Rua A, 10/);

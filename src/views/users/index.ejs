@@ -23,12 +23,12 @@
                 <td><%= user.id %></td>
                 <td><%= user.username %></td>
                 <td><%= user.role %></td>
-                <td>
-                    <a href="/users/<%= user.id %>" class="btn btn-primary">View</a>
-                    <a href="/users/<%= user.id %>/edit" class="btn btn-warning">Edit</a>
-                    <form action="/users/<%= user.id %>?_method=DELETE" method="POST" style="display: inline;">
+                <td class="text-nowrap">
+                    <a href="/users/<%= user.id %>" class="btn btn-sm btn-outline-primary">Visualizar</a>
+                    <a href="/users/<%= user.id %>/edit" class="btn btn-sm btn-outline-secondary">Editar</a>
+                    <form action="/users/<%= user.id %>?_method=DELETE" method="POST" class="d-inline">
                         <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                        <button type="submit" class="btn btn-danger">Delete</button>
+                        <button type="submit" class="btn btn-sm btn-outline-danger">Excluir</button>
                     </form>
                 </td>
             </tr>
@@ -63,19 +63,19 @@
                     usernameCell.textContent = user.username;
                     roleCell.textContent = user.role;
                     viewLink.href = `/users/${encodeURIComponent(user.id)}`;
-                    viewLink.className = 'btn btn-primary';
-                    viewLink.textContent = 'View';
+                    viewLink.className = 'btn btn-sm btn-outline-primary';
+                    viewLink.textContent = 'Visualizar';
                     editLink.href = `/users/${encodeURIComponent(user.id)}/edit`;
-                    editLink.className = 'btn btn-warning';
-                    editLink.textContent = 'Edit';
+                    editLink.className = 'btn btn-sm btn-outline-secondary';
+                    editLink.textContent = 'Editar';
                     deleteForm.action = `/users/${encodeURIComponent(user.id)}?_method=DELETE`;
                     deleteForm.method = 'POST';
                     csrfInput.type = 'hidden';
                     csrfInput.name = '_csrf';
                     csrfInput.value = '<%= csrfToken %>';
                     deleteButton.type = 'submit';
-                    deleteButton.className = 'btn btn-danger';
-                    deleteButton.textContent = 'Delete';
+                    deleteButton.className = 'btn btn-sm btn-outline-danger';
+                    deleteButton.textContent = 'Excluir';
                     deleteForm.append(csrfInput, deleteButton);
                     actionCell.append(viewLink, editLink, deleteForm);
                     tr.append(idCell, usernameCell, roleCell, actionCell);

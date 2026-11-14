@@ -19,6 +19,13 @@ const homeController = {
         }
     },
 
+    renderAbout(req, res) {
+        return res.render('about', {
+            publicPage: true,
+            currentPage: 'about',
+        });
+    },
+
     async renderHome(req, res) {
         try {
             const [quantidadeClientes, quantidadeProdutos, quantidadeVendas, valorTotalVendido, ultimasVendas] = await Promise.all([

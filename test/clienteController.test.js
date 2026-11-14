@@ -1,5 +1,7 @@
 const assert = require('node:assert/strict');
 const test = require('node:test');
+const ejs = require('ejs');
+const path = require('node:path');
 const Cliente = require('../src/models/Cliente');
 const controller = require('../src/controllers/clienteController');
 
@@ -133,6 +135,17 @@ test('lista clientes em ordem e renderiza a listagem', async () => {
 
     assert.equal(res.view, 'clientes/index');
     assert.equal(res.data.clientes, clientes);
+});
+
+test('renderiza a lista de clientes com campo de busca por nome', async () => {
+    const html = await ejs.renderFile(path.join(__dirname, '../src/views/clientes/index.ejs'), {
+        csrfToken: 'test-token',
+        clientes: [{ idCliente: 1, nome: 'Ana', cpf: '12345678901', email: null, telefone: null }],
+    });
+
+    assert.match(html, /id="clientSearch"/);
+    assert.match(html, /Ana/);
+    assert.match(html, /clientTableBody/);
 });
 
 test('visualiza e carrega edição de cliente existente', async () => {

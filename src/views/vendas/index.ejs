@@ -3,43 +3,71 @@
     <a href="/vendas/new" class="btn btn-primary">Cadastrar venda</a>
 </div>
 
-<% if (vendas.length === 0) { %>
-    <p>Nenhuma venda cadastrada.</p>
-<% } else { %>
-    <div class="table-responsive">
-        <table class="table table-striped">
-            <thead>
+<div class="form-group mb-3">
+    <label for="saleSearch">Buscar vendas por cliente:</label>
+    <input type="search" id="saleSearch" class="form-control" placeholder="Digite o nome do cliente" autocomplete="off">
+</div>
+<p id="saleEmptyState" <%= vendas.length > 0 ? 'hidden' : '' %>>
+    <%= vendas.length > 0 ? '' : 'Nenhuma venda cadastrada.' %>
+</p>
+<div class="table-responsive" id="saleTableContainer" <%= vendas.length > 0 ? '' : 'hidden' %>>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Pedido</th>
+                <th scope="col">Cliente</th>
+                <th scope="col">Data do pedido</th>
+                <th scope="col">Data de entrega</th>
+                <th scope="col">Itens</th>
+                <th scope="col">Valor total</th>
+                <th scope="col">Ações</th>
+            </tr>
+        </thead>
+        <tbody id="saleTableBody">
+            <% vendas.forEach((venda) => { %>
                 <tr>
-                    <th scope="col">Pedido</th>
-                    <th scope="col">Cliente</th>
-                    <th scope="col">Data do pedido</th>
-                    <th scope="col">Data de entrega</th>
-                    <th scope="col">Itens</th>
-                    <th scope="col">Valor total</th>
-                    <th scope="col">Ações</th>
+                    <td>#<%= venda.idVenda %></td>
+                    <td><%= venda.cliente ? venda.cliente.nome : '-' %></td>
+                    <td><%= venda.dataPedido %></td>
+                    <td><%= venda.dataEntrega || '-' %></td>
+                    <td><%= venda.itensVenda.length %></td>
+                    <td><%= venda.valorTotal == null ? '-' : `R$ ${venda.valorTotal}` %></td>
+                    <td class="text-nowrap">
+                        <a href="/vendas/<%= venda.idVenda %>" class="btn btn-sm btn-outline-primary">Detalhes</a>
+                        <a href="/vendas/<%= venda.idVenda %>/edit" class="btn btn-sm btn-outline-secondary">Editar</a>
+                        <form action="/vendas/<%= venda.idVenda %>?_method=DELETE" method="POST" class="d-inline"
+                            onsubmit="return confirm('Excluir esta venda e seus itens?');">
+                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                            <button type="submit" class="btn btn-sm btn-outline-danger">Excluir</button>
+                        </form>
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-                <% vendas.forEach((venda) => { %>
-                    <tr>
-                        <td>#<%= venda.idVenda %></td>
-                        <td><%= venda.cliente ? venda.cliente.nome : '-' %></td>
-                        <td><%= venda.dataPedido %></td>
-                        <td><%= venda.dataEntrega || '-' %></td>
-                        <td><%= venda.itensVenda.length %></td>
-                        <td><%= venda.valorTotal == null ? '-' : `R$ ${venda.valorTotal}` %></td>
-                        <td class="text-nowrap">
-                            <a href="/vendas/<%= venda.idVenda %>" class="btn btn-sm btn-outline-primary">Detalhes</a>
-                            <a href="/vendas/<%= venda.idVenda %>/edit" class="btn btn-sm btn-outline-secondary">Editar</a>
-                            <form action="/vendas/<%= venda.idVenda %>?_method=DELETE" method="POST" class="d-inline"
-                                onsubmit="return confirm('Excluir esta venda e seus itens?');">
-                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                                <button type="submit" class="btn btn-sm btn-outline-danger">Excluir</button>
-                            </form>
-                        </td>
-                    </tr>
-                <% }) %>
-            </tbody>
-        </table>
-    </div>
-<% } %>
+            <% }) %>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    const saleSearch = document.getElementById('saleSearch');
+    const saleTableBody = document.getElementById('saleTableBody');
+    const saleTableContainer = document.getElementById('saleTableContainer');
+    const saleEmptyState = document.getElementById('saleEmptyState');
+
+    saleSearch.addEventListener('input', function() {
+        const search = this.value.trim().normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase();
+        let visibleRows = 0;
+
+        Array.from(saleTableBody.rows).forEach((row) => {
+            const clientName = row.cells[1].textContent.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase();
+            row.hidden = !clientName.includes(search);
+            if (!row.hidden) visibleRows += 1;
+        });
+
+        const noResults = visibleRows === 0;
+        saleTableContainer.hidden = noResults;
+        saleEmptyState.hidden = !noResults;
+        saleEmptyState.textContent = search
+            ? 'Nenhuma venda encontrada para este cliente.'
+            : 'Nenhuma venda cadastrada.';
+    });
+</script>

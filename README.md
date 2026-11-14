@@ -1,64 +1,120 @@
-# User Management System
+# Bolachas da Zaira
 
-Este é um sistema de gerenciamento de usuários desenvolvido com Node.js, Express e MySQL. Ele permite a criação, leitura, atualização e exclusão (CRUD) de usuários, com uma interface web para administradores e usuários.
+Sistema web para apresentar os produtos da confeitaria e apoiar a administração de clientes, produtos e vendas. A aplicação oferece um catálogo público e um painel administrativo protegido por login.
 
 ## Funcionalidades
 
-- Cadastro e login de usuários
-- Listagem de usuários
-- Criação, edição e exclusão de usuários
-- Diferenciação entre administradores e usuários comuns
+### Área pública
 
-## Tecnologias Utilizadas
+- Página inicial com apresentação da confeitaria.
+- Catálogo público de produtos.
+- Página com informações sobre a confeitaria.
 
-- **Node.js**: Ambiente de execução para JavaScript no lado do servidor.
-- **Express**: Framework para construção de aplicativos web com Node.js.
-- **MySQL**: Sistema de gerenciamento de banco de dados relacional.
-- **EJS**: Motor de visualização para renderizar páginas HTML.
-- **Bootstrap**: Framework CSS para estilização das páginas.
+### Painel administrativo
 
-## Instalação
+- Login e encerramento de sessão de administradores.
+- Painel com indicadores de clientes, produtos, vendas, valor vendido e vendas recentes.
+- Cadastro, consulta, edição e exclusão de clientes.
+- Cadastro, consulta, edição e exclusão de produtos, com nome, valor, ingredientes, observações e foto opcional.
+- Cadastro, consulta, edição e exclusão de vendas, com cliente, datas, local de entrega e itens com quantidades e valores unitários. O total é calculado a partir dos itens.
+- Administração de usuários do sistema.
 
-### 1. Fork e Clone este Repositório
+As fotos de produtos aceitam JPG, PNG e WEBP, com limite de 5 MB por arquivo. O catálogo é informativo; não há fluxo de compra ou pagamento online.
 
-### 2. Instale as Dependências
+## Tecnologias
 
-Certifique-se de que você tem o Node.js e o MySQL instalados. Em seguida, execute o comando para instalar as dependências do projeto:
+- **Node.js e Express** para o servidor e as rotas HTTP.
+- **EJS e express-ejs-layouts** para as páginas renderizadas no servidor.
+- **MySQL, Sequelize, mysql2 e Sequelize CLI** para persistência e migrações.
+- **express-session** para sessões; **Argon2** e **bcryptjs** para hashes de senha.
+- **Multer e Sharp** para receber, validar e processar imagens de produtos.
+- **Bootstrap e Google Fonts**, carregados pela interface, além de estilos próprios.
+- **Node.js Test Runner (`node:test`)** para os testes automatizados.
 
-### 3. Configure o Banco de Dados
+## Requisitos
 
-Crie um banco de dados no MySQL, por exemplo, user_management.
+- Node.js e npm.
+- MySQL.
 
-Crie um arquivo `.env` com base em `.env.example` e informe as credenciais do banco. Defina `SESSION_SECRET` com um valor aleatório de pelo menos 32 caracteres; o servidor não inicia sem esse segredo. Em produção, use HTTPS e configure `TRUST_PROXY=true` somente quando a aplicação estiver atrás de um proxy TLS confiável. O arquivo `.env` não deve ser versionado.
+## Instalação e execução
 
-O seed de usuário de teste é opcional e não funciona em produção. Para habilitá-lo localmente, configure `SEED_TEST_USER=true`, `SEED_TEST_USERNAME` e `SEED_TEST_PASSWORD` no `.env`.
+1. Clone o repositório e entre na pasta do projeto.
+2. Instale as dependências:
 
-### 4. Execute o Aplicativo
+   ```bash
+   npm install
+   ```
 
-Inicie o servidor com o comando:
+3. Crie um banco de dados MySQL. Por exemplo:
 
-npm start
+   ```sql
+   CREATE DATABASE bolachas_zaira
+     CHARACTER SET utf8mb4
+     COLLATE utf8mb4_unicode_ci;
+   ```
 
-O servidor estará disponível em http://localhost:3000.
+4. Crie um arquivo `.env` na raiz do projeto com as configurações do banco e da sessão:
 
-## Estrutura MVC
+   ```dotenv
+   DB_HOST=localhost
+   DB_USER=seu_usuario
+   DB_PASSWORD=sua_senha
+   DB_NAME=bolachas_zaira
+   SESSION_SECRET=substitua-por-uma-chave-aleatoria-com-pelo-menos-32-caracteres
+   PORT=3000
+   NODE_ENV=development
+   ```
 
-O código da aplicação fica em `src/`:
+   `SESSION_SECRET` é obrigatório e deve ter pelo menos 32 caracteres. O `.env` contém credenciais e não deve ser compartilhado nem versionado.
 
-- `app.js` configura o Express, carrega os módulos e inicia o servidor.
-- `routes/` declara caminhos HTTP e encaminha cada requisição para um controller.
-- `controllers/` coordena a requisição e a resposta, chamando models ou services.
-- `models/` concentra o acesso e as operações sobre os dados.
-- `views/` contém os templates EJS; não acessa diretamente o banco de dados.
-- `middlewares/` contém funções compartilhadas de autenticação e tratamento de requisições.
-- `services/` abriga operações de aplicação independentes do transporte HTTP, como o seed de usuário de teste.
-- `config/` centraliza configurações de banco de dados e ambiente.
+5. Crie as tabelas aplicando as migrações:
 
-As migrations e arquivos de banco permanecem na raiz do projeto. Esta organização prepara as camadas sem adicionar novos CRUDs.
+   ```bash
+   npm run db:migrate
+   ```
 
-Contribuição
+6. Crie um administrador pelo terminal interativo. O comando solicitará o nome de usuário e a senha; ela deve ter de 12 a 128 bytes:
 
-Sinta-se à vontade para contribuir com melhorias ou correções. Abra uma issue ou envie um pull request para colaborar com o projeto.
-Licença
+   ```bash
+   npm run admin:create
+   ```
 
-Este projeto é licenciado sob a MIT License.
+7. Inicie o servidor:
+
+   ```bash
+   npm start
+   ```
+
+   A aplicação estará disponível em `http://localhost:3000`. Acesse `/login` para entrar no painel administrativo. Para desenvolvimento com reinicialização automática, use `npm run dev`.
+
+Em produção, configure HTTPS. Defina `TRUST_PROXY=true` somente quando a aplicação estiver atrás de um proxy confiável que termina TLS.
+
+## Testes
+
+Execute a suíte automatizada com:
+
+```bash
+npm test
+```
+
+## Estrutura do projeto
+
+- `src/app.js`: configuração do Express, middlewares e montagem das rotas.
+- `src/routes/`: rotas públicas e administrativas.
+- `src/controllers/`: lógica de requisição e resposta.
+- `src/models/`: modelos Sequelize e relações entre entidades.
+- `src/views/`: páginas e layouts EJS.
+- `src/middlewares/`: autenticação, proteção CSRF, tratamento de erros e upload de imagens.
+- `src/services/`: operações auxiliares, incluindo criação de administrador.
+- `src/config/`: configurações de conexão com o banco.
+- `migrations/`: criação e alteração do esquema do banco de dados.
+- `public/`: arquivos estáticos e imagens enviadas para o catálogo.
+- `test/`: testes automatizados.
+
+## Contribuição
+
+Contribuições com correções e melhorias são bem-vindas. Abra uma issue ou envie um pull request.
+
+## Licença
+
+O `package.json` declara a licença ISC.

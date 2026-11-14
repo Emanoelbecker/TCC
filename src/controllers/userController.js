@@ -6,9 +6,8 @@ function validId(id) {
     return /^\d+$/.test(String(id)) && Number.isSafeInteger(Number(id)) && Number(id) > 0;
 }
 
-function validateUserInput(body, requirePassword) {
+function validateUserInput(body, requirePassword, role = body.role) {
     const username = typeof body.username === 'string' ? body.username.trim() : '';
-    const role = body.role;
     const password = typeof body.password === 'string' ? body.password : '';
 
     if (!username || username.length > 50 || !['admin', 'user'].includes(role)) return null;
@@ -20,7 +19,7 @@ function validateUserInput(body, requirePassword) {
 
 const userController = {
     createUser: (req, res) => {
-        const input = validateUserInput(req.body, true);
+        const input = validateUserInput(req.body, true, 'admin');
         if (!input) return res.status(400).send('Dados de usuário inválidos.');
 
         const hashedPassword = bcrypt.hashSync(input.password, 10);
